@@ -1,0 +1,13 @@
+#!/bin/sh
+
+CLJS_LIB=$CLOJURESCRIPT_HOME/lib/
+CLJS_LIB_JARS=$CLOJURESCRIPT_HOME/lib/*
+CLJS_SRC=$CLOJURESCRIPT_HOME/src/clj
+CLJS_CLJS=$CLOJURESCRIPT_HOME/src/cljs
+LOCAL_LIB_JARS=lib/*
+LOCAL_LIB=lib/
+LOCAL_MACROS=cljs-macros/
+
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+
+exec java -server -cp "${CLJS_LIB}:${CLJS_LIB_JARS}:${CLJS_SRC}:${CLJS_CLJS}:${LOCAL_LIB}:${LOCAL_LIB_JARS}:${LOCAL_MACROS}" clojure.main $DIR/src/cljs_watch/core.clj $*
