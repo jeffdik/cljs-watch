@@ -18,6 +18,8 @@ cljs-watch cljs-src/ '{:optimizations :none :output-to "test.js"}'
 
 ## Notes
 * the default output-to is set to `resources/public/cljs/bootstrap.js`
+* turn off colors by setting color to false
+* cljs-watch is self-contained, cljsw and cljs-watch.bat use src/cljs_watch/core.clj
 * it will add the local `lib/` to your classpath when you run it, allowing you to have other cljs deps in that folder
 * to add custom macros, you can use create a folder called `cljs-macros/` from the root directory and add your macros there. You can also put macros in `CLOJURESCRIPT_HOME/lib/` to have them globally available.
 
