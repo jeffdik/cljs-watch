@@ -16,7 +16,8 @@
   (def default-opts {:optimizations :simple
                      :pretty-print true
                      :output-dir "resources/public/cljs/"
-                     :output-to "resources/public/cljs/bootstrap.js"})
+                     :output-to "resources/public/cljs/bootstrap.js"
+                     :color true})
 
   (def ANSI-CODES
     {:reset "[0m"
@@ -35,9 +36,13 @@
     [code]
     (str \u001b (get ANSI-CODES code (:reset ANSI-CODES))))
 
+  (def ^:dynamic *color*)
+  
   (defn style
     [s & codes]
-    (str (apply str (map ansi codes)) s (ansi :reset)))
+    (if *color*
+      (str (apply str (map ansi codes)) s (ansi :reset))
+      s))
 
   (def last-compiled (atom 0))
 
@@ -87,14 +92,15 @@
   (let [{:keys [source options]} (transform-cl-args *command-line-args*)
         src-dir (or source "src/")
         opts (merge default-opts options)]
-    (.mkdirs (file (:output-dir opts)))
-    (watcher-print "Building ClojureScript files in ::" src-dir)
-    (compile-cljs src-dir opts)
-    (status-print "[done]")
-    (watcher-print "Waiting for changes\n")
-    (while true
-      (Thread/sleep 1000)
-      (when (files-updated? src-dir)
-        (watcher-print "Compiling updated files...")
-        (compile-cljs src-dir opts)
-        (status-print "[done]")))))
+    (binding [*color* (:color opts)]
+      (.mkdirs (file (:output-dir opts)))
+      (watcher-print "Building ClojureScript files in ::" src-dir)
+      (compile-cljs src-dir opts)
+      (status-print "[done]")
+      (watcher-print "Waiting for changes\n")
+      (while true
+        (Thread/sleep 1000)
+        (when (files-updated? src-dir)
+          (watcher-print "Compiling updated files...")
+          (compile-cljs src-dir opts)
+          (status-print "[done]"))))))
